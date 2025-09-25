@@ -6,8 +6,8 @@ This document provides instructions for setting up the PostgreSQL database using
 
 -   A PostgreSQL server is running.
 -   You have a database created and its connection URL (e.g., `postgresql://USER:PASSWORD@HOST:PORT/DATABASE`).
--   Node.js and a package manager (e.g., pnpm) are installed.
--   Project dependencies are installed (`pnpm install`).
+-   Node.js and **pnpm** are installed.
+-   Project dependencies are installed (`pnpm install` from the root).
 
 ## 2. Environment Variables
 
@@ -21,35 +21,29 @@ Replace the example URL with your actual database connection string.
 
 ## 3. Database Migration
 
-The database schema is defined in `prisma/schema.prisma`. To create the tables defined in the schema, run the migration command. This will apply any pending migrations and create the `rate_cards`, `quotes`, and `scenarios` tables.
+The database schema is defined in `prisma/schema.prisma`. To create the tables defined in the schema, run the migration command from the project root. This will apply any pending migrations and create the `RateCard`, `Quote`, and `Scenario` tables.
 
 ```bash
-# This command will create and apply a migration based on the schema
-npx prisma migrate dev --name init
+# This command targets the 'api' workspace to run the migration
+pnpm --filter api exec prisma migrate dev --name init
 ```
 
 After running this, your database schema will be in sync with `prisma/schema.prisma`.
 
 ## 4. Seeding the Database
 
-You have two options for populating the `rate_cards` table with the initial sample data.
+You have two options for populating the `RateCard` table with the initial sample data.
 
 ### Option A: Using the Prisma Seed Script (Recommended)
 
-This method uses the TypeScript seed script located at `prisma/seed.ts` and is the standard way to seed when using Prisma.
+This method uses the TypeScript seed script located at `prisma/seed.ts`.
 
 1.  **Configure `package.json`** (if not already done):
-    Ensure your `package.json` has a `prisma` section for seeding:
-    ```json
-    "prisma": {
-      "seed": "tsx prisma/seed.ts"
-    }
-    ```
-    *Note: You may need to install `tsx` (`pnpm add -D tsx`) as a modern TypeScript runner.*
+    The `prisma` section in `apps/api/package.json` should be configured to use a TypeScript runner.
 
-2.  **Run the seed command:**
+2.  **Run the seed command from the project root:**
     ```bash
-    npx prisma db seed
+    pnpm --filter api exec prisma db seed
     ```
 
 This will read the data from `prisma/ratecards_seed.json` and insert the three sample rate cards into your database.
@@ -67,6 +61,6 @@ This is a good alternative if you prefer to work directly with SQL.
     psql -d "<YOUR_DATABASE_URL>" -f sql/insert_ratecards.sql
     ```
 
-    This will execute the `INSERT` statements in the file and populate the `rate_cards` table.
+    This will execute the `INSERT` statements in the file and populate the `RateCard` table.
 
 After completing these steps, your database will be ready for development.
