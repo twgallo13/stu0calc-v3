@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
-// Define a type for the rate card data returned by the API
 interface RateCard {
   id: string;
   name: string;
